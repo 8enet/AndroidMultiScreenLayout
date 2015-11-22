@@ -36,21 +36,23 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-
 public class LayoutSizeCompat {
 
     private static volatile Point sScreenSize = null;
     private static volatile int sStatusBarHeight;
     private static int sOrientation = Configuration.ORIENTATION_PORTRAIT; //default
 
+    /**
+     * init component
+     * @param context
+     */
     public static void init(Context context) {
         if (isGonePoint(sScreenSize))
             configSize(context);
     }
 
     /**
-     * 获取屏幕物理尺寸
-     *
+     * get the physical screen size
      * @param context
      * @param size
      */
@@ -80,8 +82,7 @@ public class LayoutSizeCompat {
     }
 
     /**
-     * 获取状态栏高度
-     *
+     * get the status bar height
      * @param context
      * @return
      */
@@ -95,8 +96,7 @@ public class LayoutSizeCompat {
     }
 
     /**
-     * 屏幕旋转时
-     *
+     * when configuration change will call this method,e.g screen rotation
      * @param context
      * @param newConfig
      */
@@ -106,6 +106,7 @@ public class LayoutSizeCompat {
         }
     }
 
+    //config the local screensize,statusbarheight and orientation
     private static void configSize(Context context) {
         sScreenSize = new Point();
         sStatusBarHeight = getStatusHeight(context);
@@ -131,6 +132,11 @@ public class LayoutSizeCompat {
     }
 
 
+    /**
+     * calculate the compatible width
+     * @param px orgin width pixels
+     * @return
+     */
     public int w(int px) {
         if (isGonePoint(sScreenSize)) {
             return px;
@@ -139,6 +145,11 @@ public class LayoutSizeCompat {
         }
     }
 
+    /**
+     * calculate the compatible height
+     * @param px orgin height pixels
+     * @return
+     */
     public int h(int px) {
         if (isGonePoint(sScreenSize)) {
             return px;
@@ -147,6 +158,10 @@ public class LayoutSizeCompat {
         }
     }
 
+    /**
+     * adjust layout size of activity
+     * @param activity
+     */
     public void adjustSize(Activity activity) {
         if (activity != null) {
             final Window window = activity.getWindow();
@@ -155,6 +170,10 @@ public class LayoutSizeCompat {
         }
     }
 
+    /**
+     * adjust layout size of dialog
+     * @param dialog
+     */
     public void adjustSize(Dialog dialog) {
         if (dialog != null) {
             final Window window = dialog.getWindow();
@@ -163,7 +182,7 @@ public class LayoutSizeCompat {
         }
     }
 
-
+    // check status bar
     private void autoCheckStatusBar(Window window) {
         int flags = window.getAttributes().flags;
         if ((flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) == WindowManager.LayoutParams.FLAG_FULLSCREEN) {
@@ -173,7 +192,10 @@ public class LayoutSizeCompat {
         }
     }
 
-
+    /**
+     * adjust layout size of view
+     * @param view
+     */
     public void adjustSize(View view) {
         if (view == null) {
             return;
@@ -228,7 +250,6 @@ public class LayoutSizeCompat {
             final ViewGroup vg = (ViewGroup) view;
             final int count = vg.getChildCount();
             for (int i = 0; i < count; i++) {
-                //递归遍历view结构
                 adjustSize(vg.getChildAt(i));
             }
         }
@@ -238,12 +259,11 @@ public class LayoutSizeCompat {
     public static class DesignSizeBuilder implements Cloneable {
         private int designUiWidth;
         private int designUiHeight;
-        private boolean showStatusBar = true; //是否显示状态栏
+        private boolean showStatusBar = true;
         private int availaleHeight;
 
         /**
-         * 设计ui的尺寸 px
-         *
+         * the design ui size
          * @param width
          * @param height
          */
@@ -255,19 +275,28 @@ public class LayoutSizeCompat {
         public DesignSizeBuilder() {
         }
 
+        /**
+         * design width
+         * @param width
+         * @return
+         */
         public DesignSizeBuilder designWidth(int width) {
             this.designUiWidth = width;
             return this;
         }
 
+        /**
+         * design height
+         * @param height
+         * @return
+         */
         public DesignSizeBuilder designHeight(int height) {
             this.designUiHeight = height;
             return this;
         }
 
         /**
-         * 是否显示状态栏，默认显示
-         *
+         * is showing status bar ?
          * @param show
          * @return
          */
@@ -277,14 +306,17 @@ public class LayoutSizeCompat {
         }
 
         /**
-         * 全屏显示
-         *
+         * current is full screen
          * @return
          */
         public DesignSizeBuilder fullScreen() {
             return showStatusBar(false);
         }
 
+        /**
+         * builder a layout compatible container
+         * @return
+         */
         public LayoutSizeCompat builder() {
             if (designUiWidth <= 0 || designUiHeight <= 0) {
                 throw new IllegalArgumentException("designUiWidth or designUiHeight > 0 !!!");
