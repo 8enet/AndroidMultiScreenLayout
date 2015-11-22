@@ -1,5 +1,5 @@
 ## Android 多屏幕适配
-[![Build Status](https://api.travis-ci.org/8enet/AndroidMultiScreenLayout.svg?branch=master)](https://travis-ci.org/8enet/apkeditor)  [![Software License](https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg)](LICENSE)
+[![Build Status](https://api.travis-ci.org/8enet/AndroidMultiScreenLayout.svg?branch=master)](https://api.travis-ci.org/8enet/AndroidMultiScreenLayout)  [![Software License](https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg)](LICENSE)
 
 
 ###使用方法:
