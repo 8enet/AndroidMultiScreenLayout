@@ -62,7 +62,14 @@ public class LayoutSizeCompat {
         }
         final WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         final Display display = wm.getDefaultDisplay();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            final Display.Mode mode = display.getMode();
+            if (mode != null) {
+                size.x = mode.getPhysicalWidth();
+                size.y = mode.getPhysicalHeight();
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
+                && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             display.getRealSize(size);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH
                 && Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
