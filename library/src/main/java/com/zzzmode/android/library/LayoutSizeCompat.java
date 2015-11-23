@@ -205,6 +205,22 @@ public class LayoutSizeCompat {
             init(view.getContext());
         }
 
+        if(mDesignSize.handler != null){
+            mDesignSize.handler.handleSize(this,view);
+        }else {
+            handleSize(view);
+        }
+
+        if (view instanceof ViewGroup) {
+            final ViewGroup vg = (ViewGroup) view;
+            final int count = vg.getChildCount();
+            for (int i = 0; i < count; i++) {
+                adjustSize(vg.getChildAt(i));
+            }
+        }
+    }
+
+    private void handleSize(View view){
         ViewGroup.LayoutParams params = view.getLayoutParams();
         if (params != null) {
             if (params.width > 0) {
@@ -219,6 +235,10 @@ public class LayoutSizeCompat {
                 mParams.topMargin = h(mParams.topMargin);
                 mParams.rightMargin = w(mParams.rightMargin);
                 mParams.bottomMargin = h(mParams.bottomMargin);
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1){
+                    mParams.setMarginStart(w(mParams.getMarginStart()));
+                    mParams.setMarginEnd(w(mParams.getMarginEnd()));
+                }
             }
         }
 
@@ -245,14 +265,6 @@ public class LayoutSizeCompat {
             }
             tv.setCompoundDrawables(cds[0], cds[1], cds[2], cds[3]);
         }
-
-        if (view instanceof ViewGroup) {
-            final ViewGroup vg = (ViewGroup) view;
-            final int count = vg.getChildCount();
-            for (int i = 0; i < count; i++) {
-                adjustSize(vg.getChildAt(i));
-            }
-        }
     }
 
 
@@ -261,6 +273,7 @@ public class LayoutSizeCompat {
         private int designUiHeight;
         private boolean showStatusBar = true;
         private int availaleHeight;
+        private ViewAdjustHandler handler;
 
         /**
          * the design ui size
@@ -314,6 +327,16 @@ public class LayoutSizeCompat {
         }
 
         /**
+         * bind yourself view adjust handler
+         * @param handler
+         * @return
+         */
+        public DesignSizeBuilder withAdjustHandler(ViewAdjustHandler handler){
+            this.handler=handler;
+            return this;
+        }
+
+        /**
          * builder a layout compatible container
          * @return
          */
@@ -342,4 +365,16 @@ public class LayoutSizeCompat {
         }
     }
 
+    /**
+     * you can custom child view auto adjust handler
+     */
+    public interface ViewAdjustHandler{
+        /**
+         * e.g {@link #handleSize(View)}
+         * this method will repeat invoke
+         * @param comp the current LayoutSizeCompat
+         * @param view the current child view
+         */
+        void handleSize(LayoutSizeCompat comp,View view);
+    }
 }
