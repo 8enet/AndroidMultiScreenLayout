@@ -18,9 +18,13 @@ android {
     }
 }
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def propFile = project.rootProject.file("local.properties")
+if(propFile.exists()) {
+    Properties properties = new Properties()
+    properties.load(propFile.newDataInputStream())
 
-if(properties.containsKey("BINTRAY_USER") && properties.containsKey("BINTRAY_API_KEY")){
-    apply from: 'bintray.gradle'
+    if (properties.containsKey("BINTRAY_USER") && properties.containsKey("BINTRAY_API_KEY")) {
+        apply from: 'bintray.gradle'
+    }
 }
+
