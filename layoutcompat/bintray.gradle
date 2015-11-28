@@ -1,0 +1,95 @@
+import java.text.SimpleDateFormat
+
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+group = GROUP_ID
+project.archivesBaseName = ARTIFACT_ID
+version = VERSION_NAME
+
+install {
+    repositories.mavenInstaller {
+
+        pom {
+            project {
+                packaging PACKAGING
+                name PROJECT_NAME
+                description PROJECT_DESC
+                url PROJECT_URL
+                groupId GROUP_ID
+                artifactId ARTIFACT_ID
+
+                licenses {
+                    license {
+                        name PROJECT_LICENCE_NAME
+                        url PROJECT_LICENCE_URL
+                    }
+                }
+                developers {
+                    developer {
+                        id DEVELOPER_ID
+                        name DEVELOPER_NAME
+                        email DEVELOPER_EMAIL
+                    }
+                }
+                scm {
+                    connection PROJECT_VCS_URL
+                    developerConnection PROJECT_VCS_URL
+                    url PROJECT_URL
+
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    options.encoding = 'UTF-8'
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("BINTRAY_USER")
+    key = properties.getProperty("BINTRAY_API_KEY")
+    configurations = ['archives']
+    pkg {
+        repo = "maven"
+        name = ARTIFACT_ID
+        websiteUrl = PROJECT_URL
+        issueTrackerUrl = PROJECT_ISSUE_URL
+        vcsUrl = PROJECT_VCS_URL
+        licenses = ["Apache-2.0"]
+        publish = true
+        publicDownloadNumbers = true
+        labels = ['android', 'layoutsize', 'screen']
+        version {
+            name = VERSION_NAME
+            desc = VERSION_DESC
+            released = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZ", Locale.getDefault()).format(new Date())
+        }
+    }
+}
