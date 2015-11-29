@@ -1,8 +1,12 @@
 ## Android 多屏幕适配
 [![Build Status](https://api.travis-ci.org/8enet/AndroidMultiScreenLayout.svg?branch=master)](https://travis-ci.org/8enet/AndroidMultiScreenLayout)  [![Software License](https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg)](LICENSE)
+[![Bintray](https://img.shields.io/badge/bintray-v1.0-brightgreen.svg)](https://bintray.com/zzzmode/maven/layoutcompat)
 
 
 ### 使用方法:
+```
+compile 'com.zzzmode.android:layoutcompat:1.0'
+```
 首先布局尺寸单位必须是px，也就是设计师给的标注是多少就在布局里下多少的，然后在`onCreat()`的`setContentView()`之后调用`new LayoutSizeCompat.DesignSizeBuilder(1080,1920).builder().adjustSize(this);` 即可适配多种屏幕。
 
 
