@@ -7,14 +7,15 @@
 ```gradle
 compile 'com.zzzmode.android:layoutcompat:1.0'
 ```
-首先布局尺寸单位必须是px，也就是设计师给的标注是多少就在布局里下多少的，然后在`onCreat()`的`setContentView()`之后调用以下方法即可适配多种屏幕。
+或者[download jar](https://github.com/8enet/AndroidMultiScreenLayout/releases)
 
+首先布局尺寸单位必须是px，也就是设计师给标注的是多少就在布局里写多少，然后在`onCreat()`的`setContentView()`之后调用以下方法即可适配多种屏幕。
 
 ```java
 LayoutSizeCompat.init(this);   
 new LayoutSizeCompat.DesignSizeBuilder(1080,1920).builder().adjustSize(this);
 ```
-其中`init()`方法可以只需要调用一次，简单用法，可以查看app demo module.
+其中`init()`方法可以只需要调用一次，`(1080,1920)`是根据UI的设计图尺寸得到的，简单用法，可以查看[simple](app/src/main/java/com/zzzmode/android/layout).
 
 
 ### 注意事项:
