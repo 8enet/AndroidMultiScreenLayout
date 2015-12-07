@@ -42,6 +42,8 @@ public class LayoutSizeCompat {
     private static volatile int sStatusBarHeight;
     private static int sOrientation = Configuration.ORIENTATION_PORTRAIT; //default
 
+    private static DisplayMetrics sDisplayMetrics=null;
+
     /**
      * init component
      * @param context
@@ -102,6 +104,44 @@ public class LayoutSizeCompat {
         return ret;
     }
 
+
+    /**
+     * {@link TypedValue#applyDimension(int, float, DisplayMetrics)}
+     * @param unit The unit to convert from. e.g {@link TypedValue#COMPLEX_UNIT_DIP}.
+     * @param value The value to apply the unit to.
+     * @return
+     */
+    public static float applyDimension(int unit, float value){
+        checkInitiated();
+        return TypedValue.applyDimension(unit,value,sDisplayMetrics);
+    }
+
+    /**
+     * converts px value into dip
+     * @param px pixels
+     * @return
+     */
+    public static float px2dip(float px){
+        checkInitiated();
+        return px/sDisplayMetrics.density;
+    }
+
+    /**
+     * converts px value into sp
+     * @param px pixels
+     * @return
+     */
+    public static float px2sp(float px){
+        checkInitiated();
+        return px/sDisplayMetrics.scaledDensity;
+    }
+
+    private static void checkInitiated(){
+        if(sDisplayMetrics == null){
+            throw new NullPointerException("sDisplayMetrics mey be not null! please init(Context) ");
+        }
+    }
+
     /**
      * when configuration change will call this method,e.g screen rotation
      * @param context
@@ -115,6 +155,7 @@ public class LayoutSizeCompat {
 
     //config the local screensize,statusbarheight and orientation
     private static void configSize(Context context) {
+        context=context.getApplicationContext();
         sScreenSize = new Point();
         sStatusBarHeight = getStatusHeight(context);
         getPhysicalSize(context, sScreenSize);
@@ -123,6 +164,7 @@ public class LayoutSizeCompat {
         } else {
             sOrientation = Configuration.ORIENTATION_LANDSCAPE;
         }
+        sDisplayMetrics=context.getResources().getDisplayMetrics();
     }
 
     private static boolean isGonePoint(Point p) {
